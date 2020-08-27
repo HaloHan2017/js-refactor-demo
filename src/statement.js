@@ -4,10 +4,18 @@ const amountformater = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 }).format;
 
+function calculateVolumeCredits(volumeCredits,perf,type){
+  volumeCredits += Math.max(perf.audience - 30, 0);
+  if ('comedy' === type) {
+    volumeCredits += Math.floor(perf.audience / 5)
+  };
+  return volumeCredits;
+}
+
 function statement (invoice, plays) {
   let totalAmount = 0;
-  let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
+  let volumeCredits = 0;
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = 0;
@@ -28,10 +36,7 @@ function statement (invoice, plays) {
       default:
         throw new Error(` ${play.type}`);
     }
-    // add volume credits
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
-    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+    volumeCredits = calculateVolumeCredits(volumeCredits,perf,play.type);
     //print line for this order
     result += ` ${play.name}: ${amountformater(thisAmount / 100)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
