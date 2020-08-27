@@ -24,6 +24,14 @@ function calculateTragedyAmount(audience){
   return amount;
 }
 
+function calculateComedyAmount(audience){
+  let amount = 30000;
+  if (audience > 20) {
+    amount += 10000 + 500 * (audience - 20);
+  }
+  return amount += 300 * audience;
+}
+
 function statement(invoice, plays) {
   let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -36,11 +44,7 @@ function statement(invoice, plays) {
         thisAmount = calculateTragedyAmount(perf.audience);
         break;
       case 'comedy':
-        thisAmount = 30000;
-        if (perf.audience > 20) {
-          thisAmount += 10000 + 500 * (perf.audience - 20);
-        }
-        thisAmount += 300 * perf.audience;
+        thisAmount = calculateComedyAmount(perf.audience);
         break;
       default:
         throw new Error(` ${play.type}`);
