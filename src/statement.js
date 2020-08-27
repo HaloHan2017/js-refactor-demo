@@ -46,6 +46,14 @@ function calculateAmountByType(type,audience){
   }
 }
 
+function calculateTotalAmount(performances,plays){
+  let totalAmount = 0;
+  for (let perf of performances) {
+    totalAmount += calculateAmountByType(plays[perf.playID].type,perf.audience);
+  }
+  return totalAmount;
+}
+
 function statement(invoice, plays) {
   let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -53,9 +61,8 @@ function statement(invoice, plays) {
     const play = plays[perf.playID];
     let thisAmount = calculateAmountByType(play.type,perf.audience);
     result = appendResultString(result, (thisAmount / 100), play, perf);
-    totalAmount += thisAmount;
   }
-  result += `Amount owed is ${amountformater(totalAmount / 100)}\n`;
+  result += `Amount owed is ${amountformater(calculateTotalAmount(invoice.performances,plays) / 100)}\n`;
   result += `You earned ${calculateVolumeCredits(invoice.performances,plays)} credits \n`;
   return result;
 }
