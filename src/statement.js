@@ -12,6 +12,10 @@ function calculateVolumeCredits(volumeCredits,perf,type){
   return volumeCredits;
 }
 
+function appendResultString(result,amount,play,perf){
+  return result += ` ${play.name}: ${amountformater(amount)} (${perf.audience} seats)\n`;
+}
+
 function statement (invoice, plays) {
   let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -37,12 +41,12 @@ function statement (invoice, plays) {
         throw new Error(` ${play.type}`);
     }
     volumeCredits = calculateVolumeCredits(volumeCredits,perf,play.type);
-    //print line for this order
-    result += ` ${play.name}: ${amountformater(thisAmount / 100)} (${perf.audience} seats)\n`;
+    result = appendResultString(result,(thisAmount / 100),play,perf);
     totalAmount += thisAmount;
   }
   result += `Amount owed is ${amountformater(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits \n`;
+  // result = appendResultString(null,null,null,null,(totalAmount / 100),volumeCredits);
   return result;
 }
 
