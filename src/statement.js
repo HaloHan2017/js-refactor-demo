@@ -32,6 +32,16 @@ function calculateComedyAmount(audience){
   return amount += 300 * audience;
 }
 
+function calculateAmountByType(type,audience){
+  if(type === 'tragedy'){
+    return calculateTragedyAmount(audience);
+  }else if(type === 'comedy'){
+    return calculateComedyAmount(audience);
+  }else{
+    throw new Error(` ${type}`);
+  }
+}
+
 function statement(invoice, plays) {
   let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -39,16 +49,7 @@ function statement(invoice, plays) {
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = 0;
-    switch (play.type) {
-      case 'tragedy':
-        thisAmount = calculateTragedyAmount(perf.audience);
-        break;
-      case 'comedy':
-        thisAmount = calculateComedyAmount(perf.audience);
-        break;
-      default:
-        throw new Error(` ${play.type}`);
-    }
+    thisAmount = calculateAmountByType(play.type,perf.audience);
     volumeCredits = calculateVolumeCredits(volumeCredits, perf, play.type);
     result = appendResultString(result, (thisAmount / 100), play, perf);
     totalAmount += thisAmount;
