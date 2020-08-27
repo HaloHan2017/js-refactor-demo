@@ -25,7 +25,7 @@ function statement (invoice, plays) {
         thisAmount += 300 * perf.audience;
         break;
       default:
-        throw new Error(`unknown type: ${play.type}`);
+        throw new Error(` ${play.type}`);
     }
     // add volume credits
     volumeCredits += Math.max(perf.audience - 30, 0);
