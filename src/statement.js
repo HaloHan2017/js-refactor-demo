@@ -16,6 +16,14 @@ function appendResultString(result, amount, play, perf) {
   return result += ` ${play.name}: ${amountformater(amount)} (${perf.audience} seats)\n`;
 }
 
+function calculateTragedyAmount(audience){
+  let amount = 40000;
+  if (audience > 30) {
+    amount += 1000 * (audience - 30);
+  }
+  return amount;
+}
+
 function statement(invoice, plays) {
   let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -25,10 +33,7 @@ function statement(invoice, plays) {
     let thisAmount = 0;
     switch (play.type) {
       case 'tragedy':
-        thisAmount = 40000;
-        if (perf.audience > 30) {
-          thisAmount += 1000 * (perf.audience - 30);
-        }
+        thisAmount = calculateTragedyAmount(perf.audience);
         break;
       case 'comedy':
         thisAmount = 30000;
