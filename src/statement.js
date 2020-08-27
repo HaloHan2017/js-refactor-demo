@@ -54,16 +54,37 @@ function calculateTotalAmount(performances,plays){
   return totalAmount;
 }
 
-function statement(invoice, plays) {
-  let totalAmount = 0;
-  let result = `Statement for ${invoice.customer}\n`;
-  for (let perf of invoice.performances) {
+function generatePerformances(performances,plays){
+  let resultArray = [];
+  for (let perf of performances) {
     const play = plays[perf.playID];
-    result = appendResultString(result, (calculateAmountByType(play.type,perf.audience) / 100), play, perf);
+    let item = {
+      name : play.name,
+      amount : calculateAmountByType(play.type,perf.audience) / 100,
+      audience : perf.audience
+    }
+    resultArray.push(item);
   }
-  result += `Amount owed is ${amountformater(calculateTotalAmount(invoice.performances,plays) / 100)}\n`;
-  result += `You earned ${calculateVolumeCredits(invoice.performances,plays)} credits \n`;
-  return result;
+  return resultArray;
+}
+
+function printTextByData(data){
+  return `Statement for ${data.customer}\n`
+        + data.resultArray.map(item => {
+          return ` ${item.name}: ${amountformater(item.amount)} (${item.audience} seats)\n`;
+        }).join('')
+        + `Amount owed is ${data.totalAmount}\n`
+        + `You earned ${data.volumeCredits} credits \n`
+}
+
+function statement(invoice, plays) {
+  let resultData = {
+    customer : invoice.customer,
+    resultArray : generatePerformances(invoice.performances,plays),
+    totalAmount : amountformater(calculateTotalAmount(invoice.performances,plays) / 100),
+    volumeCredits : calculateVolumeCredits(invoice.performances,plays)
+  }
+  return printTextByData(resultData);
 }
 
 module.exports = {
