@@ -4,11 +4,15 @@ const amountformater = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 }).format;
 
-function calculateVolumeCredits(volumeCredits, perf, type) {
-  volumeCredits += Math.max(perf.audience - 30, 0);
-  if ('comedy' === type) {
-    volumeCredits += Math.floor(perf.audience / 5)
-  };
+function calculateVolumeCredits(performances,plays) {
+  let volumeCredits = 0;
+  for(let perf of performances){
+    const play = plays[perf.playID];
+    volumeCredits += Math.max(perf.audience - 30, 0);
+    if ('comedy' === play.type) {
+      volumeCredits += Math.floor(perf.audience / 5)
+    };
+  }
   return volumeCredits;
 }
 
@@ -45,17 +49,14 @@ function calculateAmountByType(type,audience){
 function statement(invoice, plays) {
   let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
-  let volumeCredits = 0;
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
-    let thisAmount = 0;
-    thisAmount = calculateAmountByType(play.type,perf.audience);
-    volumeCredits = calculateVolumeCredits(volumeCredits, perf, play.type);
+    let thisAmount = calculateAmountByType(play.type,perf.audience);
     result = appendResultString(result, (thisAmount / 100), play, perf);
     totalAmount += thisAmount;
   }
   result += `Amount owed is ${amountformater(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits \n`;
+  result += `You earned ${calculateVolumeCredits(invoice.performances,plays)} credits \n`;
   return result;
 }
 
