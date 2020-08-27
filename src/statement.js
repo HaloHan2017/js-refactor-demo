@@ -4,7 +4,7 @@ const amountformater = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 }).format;
 
-function calculateVolumeCredits(volumeCredits,perf,type){
+function calculateVolumeCredits(volumeCredits, perf, type) {
   volumeCredits += Math.max(perf.audience - 30, 0);
   if ('comedy' === type) {
     volumeCredits += Math.floor(perf.audience / 5)
@@ -12,11 +12,11 @@ function calculateVolumeCredits(volumeCredits,perf,type){
   return volumeCredits;
 }
 
-function appendResultString(result,amount,play,perf){
+function appendResultString(result, amount, play, perf) {
   return result += ` ${play.name}: ${amountformater(amount)} (${perf.audience} seats)\n`;
 }
 
-function statement (invoice, plays) {
+function statement(invoice, plays) {
   let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
   let volumeCredits = 0;
@@ -40,13 +40,12 @@ function statement (invoice, plays) {
       default:
         throw new Error(` ${play.type}`);
     }
-    volumeCredits = calculateVolumeCredits(volumeCredits,perf,play.type);
-    result = appendResultString(result,(thisAmount / 100),play,perf);
+    volumeCredits = calculateVolumeCredits(volumeCredits, perf, play.type);
+    result = appendResultString(result, (thisAmount / 100), play, perf);
     totalAmount += thisAmount;
   }
   result += `Amount owed is ${amountformater(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits \n`;
-  // result = appendResultString(null,null,null,null,(totalAmount / 100),volumeCredits);
   return result;
 }
 
