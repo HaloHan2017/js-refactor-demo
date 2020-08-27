@@ -77,16 +77,38 @@ function printTextByData(data){
         + `You earned ${data.volumeCredits} credits \n`
 }
 
+function printHtmlByData(data){
+  return `<h1>Statement for ${data.customer}</h1>\n`
+        + '<table>\n'
+        + '<tr><th>play</th><th>seats</th><th>cost</th></tr>'
+        + data.resultArray.map(item => {
+          return ` <tr><td>${item.name}</td><td>${item.audience}</td><td>${amountformater(item.amount)}</td></tr>\n`;
+        }).join('')
+        + '</table>\n'
+        + `<p>Amount owed is <em>${data.totalAmount}</em></p>\n`
+        + `<p>You earned <em>${data.volumeCredits}</em> credits</p>\n`
+}
+
 function statement(invoice, plays) {
-  let resultData = {
+  return printTextByData(getPrintResultData(invoice,plays));
+}
+
+function statementHTML(invoice, plays){
+  return printHtmlByData(getPrintResultData(invoice,plays));
+}
+
+function getPrintResultData(invoice,plays){
+  return {
     customer : invoice.customer,
     resultArray : generatePerformances(invoice.performances,plays),
     totalAmount : amountformater(calculateTotalAmount(invoice.performances,plays) / 100),
     volumeCredits : calculateVolumeCredits(invoice.performances,plays)
   }
-  return printTextByData(resultData);
 }
+
+
 
 module.exports = {
   statement,
+  statementHTML
 };
