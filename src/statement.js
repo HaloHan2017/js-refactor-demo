@@ -59,8 +59,7 @@ function statement(invoice, plays) {
   let result = `Statement for ${invoice.customer}\n`;
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
-    let thisAmount = calculateAmountByType(play.type,perf.audience);
-    result = appendResultString(result, (thisAmount / 100), play, perf);
+    result = appendResultString(result, (calculateAmountByType(play.type,perf.audience) / 100), play, perf);
   }
   result += `Amount owed is ${amountformater(calculateTotalAmount(invoice.performances,plays) / 100)}\n`;
   result += `You earned ${calculateVolumeCredits(invoice.performances,plays)} credits \n`;
